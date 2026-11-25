@@ -1,6 +1,6 @@
 # Giz
 
-O Giz usa React, Django e PostgreSQL. O acesso é por e-mail e senha, com uma tela inicial para cada perfil.
+O Giz usa React, Django e PostgreSQL. O acesso é por e-mail e senha. Coordenação e diretoria podem cadastrar a estrutura escolar, e a diretoria configura as regras de avaliação.
 
 ## Requisitos
 
@@ -69,6 +69,20 @@ Contas antigas sem e-mail precisam de um endereço para entrar. Se a migração 
 Se a migração apontar um perfil inválido em uma conta existente, ajuste-o para aluno, professor, coordenação ou diretoria antes de rodar `migrate` novamente.
 
 A página [Saúde do Giz](http://localhost:5173/saude) consulta `/api/saude/` pelo proxy do Vite, que encaminha as requisições ao Django na porta 8000. O Django consulta o PostgreSQL em `localhost:5432` e retorna `{"status": "ok"}` quando o banco está disponível ou HTTP 503 quando está indisponível.
+
+## Preparar a gestão escolar
+
+Em `backend/`, depois de aplicar as migrações, crie o superusuário do Django:
+
+```powershell
+..\.venv\Scripts\python.exe manage.py createsuperuser
+```
+
+Abra o [admin do Django em 127.0.0.1](http://127.0.0.1:8000/admin/) e entre com o nome de usuário e a senha do superusuário. Use esse endereço para manter a sessão do admin separada da sessão do Giz em `localhost`.
+
+1. Em **Escolas**, adicione a escola. A média mínima, os pontos de atividades e os pontos da prova começam em **5,0** cada.
+2. Em **Usuários**, adicione a primeira conta com perfil **Diretoria**, e-mail e senha inicial. Para testar o acesso da coordenação, crie também uma conta com perfil **Coordenação**.
+3. No [Giz](http://localhost:5173), entre com o e-mail de uma dessas contas e abra **Gestão escolar**. Cadastre anos letivos, bimestres, turmas, disciplinas, professores, alunos, vínculos docentes e matrículas. A diretoria também pode abrir **Regras de avaliação** e alterar os valores.
 
 ## Verificações
 
