@@ -1,6 +1,6 @@
 # Giz
 
-O esqueleto do projeto conecta uma página React a uma API Django que verifica a disponibilidade do PostgreSQL.
+O Giz usa React, Django e PostgreSQL. O acesso é por e-mail e senha, com uma tela inicial para cada perfil.
 
 ## Requisitos
 
@@ -45,7 +45,30 @@ npm ci
 npm run dev
 ```
 
-Abra [o Giz](http://localhost:5173). A página consulta `/api/saude/` pelo proxy do Vite, que encaminha a requisição ao Django na porta 8000. O Django consulta o PostgreSQL em `localhost:5432` e retorna `{"status": "ok"}` quando o banco está disponível ou HTTP 503 quando está indisponível.
+Abra [o Giz](http://localhost:5173) para entrar com uma conta existente. Para preparar um usuário local, abra o shell do Django em `backend/`:
+
+```powershell
+..\.venv\Scripts\python.exe manage.py shell
+```
+
+```python
+from getpass import getpass
+from contas.models import Usuario
+
+Usuario.objects.create_user(
+    username="aluno-local",
+    first_name="Aluno",
+    email="aluno@example.com",
+    password=getpass("Senha: "),
+    perfil=Usuario.Perfil.ALUNO,
+)
+```
+
+Contas antigas sem e-mail precisam de um endereço para entrar. Se a migração apontar e-mails duplicados, atribua endereços distintos às contas afetadas antes de rodar `migrate` novamente. O login não diferencia maiúsculas e minúsculas no e-mail.
+
+Se a migração apontar um perfil inválido em uma conta existente, ajuste-o para aluno, professor, coordenação ou diretoria antes de rodar `migrate` novamente.
+
+A página [Saúde do Giz](http://localhost:5173/saude) consulta `/api/saude/` pelo proxy do Vite, que encaminha as requisições ao Django na porta 8000. O Django consulta o PostgreSQL em `localhost:5432` e retorna `{"status": "ok"}` quando o banco está disponível ou HTTP 503 quando está indisponível.
 
 ## Verificações
 
