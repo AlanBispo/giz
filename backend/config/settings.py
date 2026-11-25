@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "escolas",
     "atividades",
     "notas",
+    "boletim",
 ]
 
 MIDDLEWARE = [
