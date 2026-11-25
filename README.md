@@ -88,6 +88,12 @@ Abra o [admin do Django em 127.0.0.1](http://127.0.0.1:8000/admin/) e entre com 
 
 No perfil **Professor**, abra **Atividades e provas**, escolha uma turma, disciplina e bimestre e consulte o saldo antes de publicar. Cada período aceita uma prova por turma e disciplina. A prova recebe o valor configurado no momento da publicação e mantém esse valor ao mudar de período. O perfil **Aluno** usa a mesma tela para consultar as publicações das turmas em que está matriculado.
 
+## Lançar e consultar notas
+
+Em **Atividades e provas**, o professor abre **Lançar notas** na publicação e salva as notas dos alunos matriculados na turma. Zero é uma nota válida. Campos em branco de alunos ainda sem nota podem ficar para outro lançamento.
+
+O aluno consulta **Minhas notas**, enquanto coordenação e diretoria consultam **Notas da escola**. Uma publicação com notas pode ter seu título, descrição e data corrigidos. O valor precisa continuar pelo menos igual à maior nota já lançada, e a publicação mantém turma, disciplina, bimestre e tipo.
+
 ## Verificações
 
 Em `backend/`, com o PostgreSQL em execução:

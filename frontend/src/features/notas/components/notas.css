@@ -1,0 +1,53 @@
+main:has(.area-notas) {
+  max-width: 64rem;
+  margin-top: 1rem;
+}
+
+.area-notas h1 {
+  margin: 0.75rem 0 1rem;
+}
+
+.area-notas a {
+  color: #224b37;
+}
+
+.tabela-notas {
+  overflow-x: auto;
+}
+
+.tabela-notas table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tabela-notas th,
+.tabela-notas td {
+  padding: 0.625rem;
+  border-bottom: 1px solid #c9d9ce;
+}
+
+.tabela-notas thead th {
+  background: #f1f6f2;
+}
+
+.tabela-notas small {
+  display: block;
+  font-weight: 400;
+  margin-top: 0.25rem;
+}
+
+.tabela-notas input {
+  max-width: 12rem;
+  min-width: 6rem;
+}
+
+.area-notas form > button {
+  justify-self: start;
+}
+
+@media (max-width: 42rem) {
+  main:has(.area-notas) {
+    padding: 1rem;
+  }
+}

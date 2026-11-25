@@ -6,6 +6,8 @@ import { Login } from '../features/contas/components/Login'
 import { useSessao } from '../features/contas/hooks/useSessao'
 import { perfis } from '../features/contas/types'
 import { AreaEscolar } from '../features/escola/components/AreaEscolar'
+import { ConsultaNotas } from '../features/notas/components/ConsultaNotas'
+import { LancamentoNotas } from '../features/notas/components/LancamentoNotas'
 
 export function RotasDaConta() {
   const sessao = useSessao()
@@ -30,6 +32,7 @@ export function RotasDaConta() {
   const diretoria = usuario?.perfil === 'diretoria'
   const podeGerir = diretoria || usuario?.perfil === 'coordenacao'
   const podeVerAtividades = usuario?.perfil === 'professor' || usuario?.perfil === 'aluno'
+  const podeConsultarNotas = podeGerir || usuario?.perfil === 'aluno'
 
   return (
     <Routes>
@@ -40,6 +43,12 @@ export function RotasDaConta() {
       <Route path="atividades" element={usuario && podeVerAtividades
         ? <Atividades key={usuario.id} usuario={usuario.id} professor={usuario.perfil === 'professor'} inicio={destino} />
         : <Navigate to={destino} replace />} />
+      <Route path="notas" element={usuario && podeConsultarNotas
+        ? <ConsultaNotas key={usuario.id} usuario={usuario.id} gestao={podeGerir} inicio={destino} />
+        : <Navigate to={destino} replace />} />
+      <Route path="notas/:publicacaoId" element={usuario?.perfil === 'professor'
+        ? <LancamentoNotas key={usuario.id} usuario={usuario.id} />
+        : <Navigate to={destino} replace />} />
       {Object.keys(perfis).map((perfil) => (
         <Route
           key={perfil}
@@ -49,6 +58,7 @@ export function RotasDaConta() {
                 <Inicio usuario={usuario} />
                 {podeGerir && <p><Link to="/escola">Gestão escolar</Link></p>}
                 {podeVerAtividades && <p><Link to="/atividades">Atividades e provas</Link></p>}
+                {podeConsultarNotas && <p><Link to="/notas">{podeGerir ? 'Notas da escola' : 'Minhas notas'}</Link></p>}
               </>
             : <Navigate to={destino} replace />}
         />
