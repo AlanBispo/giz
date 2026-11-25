@@ -1,6 +1,7 @@
 import { Link, Navigate, Route, Routes } from 'react-router'
 
 import { Atividades } from '../features/atividades/components/Atividades'
+import { Boletim } from '../features/boletim/components/Boletim'
 import { Inicio } from '../features/contas/components/Inicio'
 import { Login } from '../features/contas/components/Login'
 import { useSessao } from '../features/contas/hooks/useSessao'
@@ -46,6 +47,9 @@ export function RotasDaConta() {
       <Route path="notas" element={usuario && podeConsultarNotas
         ? <ConsultaNotas key={usuario.id} usuario={usuario.id} gestao={podeGerir} inicio={destino} />
         : <Navigate to={destino} replace />} />
+      <Route path="boletim" element={usuario && podeConsultarNotas
+        ? <Boletim key={usuario.id} usuario={usuario.id} gestao={podeGerir} inicio={destino} />
+        : <Navigate to={destino} replace />} />
       <Route path="notas/:publicacaoId" element={usuario?.perfil === 'professor'
         ? <LancamentoNotas key={usuario.id} usuario={usuario.id} />
         : <Navigate to={destino} replace />} />
@@ -59,6 +63,7 @@ export function RotasDaConta() {
                 {podeGerir && <p><Link to="/escola">Gestão escolar</Link></p>}
                 {podeVerAtividades && <p><Link to="/atividades">Atividades e provas</Link></p>}
                 {podeConsultarNotas && <p><Link to="/notas">{podeGerir ? 'Notas da escola' : 'Minhas notas'}</Link></p>}
+                {podeConsultarNotas && <p><Link to="/boletim">{podeGerir ? 'Boletim por turma' : 'Meu boletim'}</Link></p>}
               </>
             : <Navigate to={destino} replace />}
         />

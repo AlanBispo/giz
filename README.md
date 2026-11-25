@@ -94,6 +94,10 @@ Em **Atividades e provas**, o professor abre **Lançar notas** na publicação e
 
 O aluno consulta **Minhas notas**, enquanto coordenação e diretoria consultam **Notas da escola**. Uma publicação com notas pode ter seu título, descrição e data corrigidos. O valor precisa continuar pelo menos igual à maior nota já lançada, e a publicação mantém turma, disciplina, bimestre e tipo.
 
+## Consultar o boletim
+
+O aluno abre **Meu boletim** para ver as próprias notas por disciplina e bimestre. Coordenação e diretoria abrem **Boletim por turma** e escolhem uma turma. O boletim soma as notas lançadas de atividades e da prova. Quando a diretoria altera a média mínima, o boletim recalcula a situação com a regra vigente e preserva as notas lançadas.
+
 ## Verificações
 
 Em `backend/`, com o PostgreSQL em execução:
