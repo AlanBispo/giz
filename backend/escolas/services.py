@@ -6,6 +6,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
+from atividades.selectors import ha_periodo_acima_do_limite
 from contas.models import Usuario
 from contas.selectors import buscar_usuario_por_email
 
@@ -51,6 +52,11 @@ def matricular_aluno(*, aluno: Usuario, turma: Turma) -> Matricula:
 @transaction.atomic
 def atualizar_regras(*, alteracoes: Mapping[str, Decimal]) -> Escola:
     escola = Escola.objects.select_for_update().get()
+    limite = alteracoes.get("pontos_atividades", escola.pontos_atividades)
+    if limite < escola.pontos_atividades and ha_periodo_acima_do_limite(limite=limite):
+        raise ValidationError({
+            "pontos_atividades": "Já foram distribuídos mais pontos de atividades em pelo menos um bimestre."
+        })
     for campo, valor in alteracoes.items():
         setattr(escola, campo, valor)
     if alteracoes:

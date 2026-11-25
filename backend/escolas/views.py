@@ -92,6 +92,8 @@ class RegrasView(APIView):
         entrada.is_valid(raise_exception=True)
         try:
             escola = services.atualizar_regras(alteracoes=entrada.validated_data)
+        except ValidationError as erro:
+            raise ErroEntrada(erro.message_dict) from erro
         except Escola.DoesNotExist as erro:
             raise NotFound("Cadastre a escola no admin do Django.") from erro
         return Response(serializers.EscolaSerializer(escola).data)
