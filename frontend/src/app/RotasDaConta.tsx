@@ -1,5 +1,6 @@
 import { Link, Navigate, Route, Routes } from 'react-router'
 
+import { Atividades } from '../features/atividades/components/Atividades'
 import { Inicio } from '../features/contas/components/Inicio'
 import { Login } from '../features/contas/components/Login'
 import { useSessao } from '../features/contas/hooks/useSessao'
@@ -28,6 +29,7 @@ export function RotasDaConta() {
   const destino = usuario ? `/${usuario.perfil}` : '/login'
   const diretoria = usuario?.perfil === 'diretoria'
   const podeGerir = diretoria || usuario?.perfil === 'coordenacao'
+  const podeVerAtividades = usuario?.perfil === 'professor' || usuario?.perfil === 'aluno'
 
   return (
     <Routes>
@@ -35,12 +37,19 @@ export function RotasDaConta() {
       <Route path="escola/*" element={podeGerir
         ? <AreaEscolar inicio={destino} diretoria={diretoria} />
         : <Navigate to={destino} replace />} />
+      <Route path="atividades" element={usuario && podeVerAtividades
+        ? <Atividades key={usuario.id} usuario={usuario.id} professor={usuario.perfil === 'professor'} inicio={destino} />
+        : <Navigate to={destino} replace />} />
       {Object.keys(perfis).map((perfil) => (
         <Route
           key={perfil}
           path={perfil}
           element={usuario?.perfil === perfil
-            ? <><Inicio usuario={usuario} />{podeGerir && <p><Link to="/escola">Gestão escolar</Link></p>}</>
+            ? <>
+                <Inicio usuario={usuario} />
+                {podeGerir && <p><Link to="/escola">Gestão escolar</Link></p>}
+                {podeVerAtividades && <p><Link to="/atividades">Atividades e provas</Link></p>}
+              </>
             : <Navigate to={destino} replace />}
         />
       ))}

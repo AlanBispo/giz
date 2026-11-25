@@ -4,8 +4,8 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { ErroHttp } from '../../../lib/http'
-import { consultaRegras, mensagemDeErro, type Regras, salvarRegras, type ValoresRegras } from '../api/escola'
+import { ErroHttp, mensagemDeErro } from '../../../lib/http'
+import { consultaRegras, type Regras, salvarRegras, type ValoresRegras } from '../api/escola'
 
 const decimal = z.string().trim()
   .regex(/^\d{1,3}([.,]\d{1,2})?$/, 'Informe um número de 0 a 999,99.')

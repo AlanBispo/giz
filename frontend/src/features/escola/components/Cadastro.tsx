@@ -3,7 +3,8 @@ import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/rea
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { cadastrar, consultaCadastro, mensagemDeErro, type Recurso } from '../api/escola'
+import { mensagemDeErro } from '../../../lib/http'
+import { cadastrar, consultaCadastro, type Recurso } from '../api/escola'
 import { cadastros } from '../cadastros'
 
 export function Cadastro({ recurso }: { recurso: Recurso }) {
