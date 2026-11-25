@@ -1,0 +1,27 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #172e24;
+  background: #f1f6f2;
+}
+
+body {
+  margin: 0;
+  padding: 1rem;
+}
+
+main {
+  max-width: 28rem;
+  margin: min(12vh, 6rem) auto 0;
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid #c9d9ce;
+  border-radius: 0.75rem;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+[role='status'] {
+  margin-bottom: 0;
+}
