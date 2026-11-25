@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "contas",
     "escolas",
     "atividades",
+    "notas",
 ]
 
 MIDDLEWARE = [

@@ -94,6 +94,7 @@ export function Atividades({ usuario, professor, inicio }: {
                   </div>
                 ) : (
                   <div className="acoes-publicacao">
+                    <Link to={`/notas/${item.id}`}>Lançar notas</Link>
                     <button type="button" disabled={excluir.isPending} onClick={() => setFormulario(item)}>Editar</button>
                     <button type="button" disabled={excluir.isPending} onClick={() => {
                       excluir.reset()

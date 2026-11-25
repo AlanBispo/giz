@@ -2,13 +2,15 @@ from decimal import Decimal
 
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
+from django.db.models.deletion import ProtectedError
 
 from contas.models import Usuario
 from escolas.models import Bimestre, Disciplina, Escola, Turma
+from notas.selectors import maior_nota_da_publicacao
 
 from .models import Publicacao
 from .selectors import (
-    publicacoes_do_periodo, publicacoes_visiveis, somar_atividades, vinculos_do_professor,
+    bloquear_publicacao_docente, publicacoes_do_periodo, somar_atividades, vinculos_do_professor,
 )
 
 
@@ -33,10 +35,12 @@ def salvar_publicacao(
     publicacao = (
         Publicacao()
         if publicacao_id is None
-        else publicacoes_visiveis(usuario=professor).get(pk=publicacao_id)
+        else bloquear_publicacao_docente(professor=professor, publicacao_id=publicacao_id)
     )
     if publicacao_id is not None and publicacao.versao != versao:
         raise PublicacaoDesatualizada
+    campos_contexto = ("turma_id", "disciplina_id", "bimestre_id", "tipo")
+    contexto_anterior = tuple(getattr(publicacao, campo) for campo in campos_contexto)
     era_prova = publicacao.tipo == Publicacao.Tipo.PROVA
     valor_anterior = publicacao.valor
     for campo, valor in dados.items():
@@ -58,6 +62,14 @@ def salvar_publicacao(
         if publicacao.valor > saldo:
             raise ValidationError({"valor": "O valor excede o saldo de pontos de atividades do bimestre."})
     if publicacao_id is not None:
+        maior_nota = maior_nota_da_publicacao(publicacao_id=publicacao_id)
+        if maior_nota is not None:
+            if contexto_anterior != tuple(getattr(publicacao, campo) for campo in campos_contexto):
+                raise ValidationError({
+                    "non_field_errors": "Turma, disciplina, bimestre e tipo não podem mudar após o lançamento de notas."
+                })
+            if publicacao.valor < maior_nota:
+                raise ValidationError({"valor": "O valor não pode ficar abaixo de uma nota lançada."})
         publicacao.versao += 1
     publicacao.save()
     return publicacao
@@ -66,10 +78,15 @@ def salvar_publicacao(
 @transaction.atomic
 def excluir_publicacao(*, professor: Usuario, publicacao_id: int, versao: int) -> None:
     Escola.objects.select_for_update().get()
-    publicacao = publicacoes_visiveis(usuario=professor).get(pk=publicacao_id)
+    publicacao = bloquear_publicacao_docente(professor=professor, publicacao_id=publicacao_id)
     if publicacao.versao != versao:
         raise PublicacaoDesatualizada
-    publicacao.delete()
+    try:
+        publicacao.delete()
+    except ProtectedError as erro:
+        raise ValidationError({
+            "non_field_errors": "Uma publicação com notas lançadas não pode ser excluída."
+        }) from erro
 
 
 @transaction.atomic
