@@ -14,6 +14,10 @@ class Usuario(AbstractUser):
     Perfil = PerfilUsuario
     perfil = models.CharField(max_length=11, choices=Perfil.choices, default=Perfil.ALUNO)
 
+    @property
+    def nome_de_exibicao(self) -> str:
+        return self.get_full_name() or self.get_username()
+
     class Meta(AbstractUser.Meta):
         constraints = [
             models.CheckConstraint(
