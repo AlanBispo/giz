@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 import { z } from 'zod'
 
-import { enviarJson, ErroHttp, obterJson } from '../../../lib/http'
+import { enviarJson, obterJson } from '../../../lib/http'
 
 const registrosSchema = z.array(z.object({ id: z.number().int() })
   .catchall(z.union([z.string(), z.number()])))
@@ -48,19 +48,4 @@ export const consultaRegras = queryOptions({
 
 export async function salvarRegras(dados: Partial<ValoresRegras>): Promise<Regras> {
   return regrasSchema.parse(await enviarJson('/api/escola/regras/', 'PATCH', dados))
-}
-
-const errosSchema = z.record(z.string(), z.union([z.string(), z.array(z.string())]))
-
-export function mensagemDeErro(erro: unknown, rotulos: Record<string, string>): string {
-  if (erro instanceof ErroHttp && erro.status === 400) {
-    const resposta = errosSchema.safeParse(erro.detalhes)
-    if (resposta.success) {
-      return Object.entries(resposta.data).map(([chave, valor]) => {
-        const mensagem = Array.isArray(valor) ? valor.join(' ') : valor
-        return rotulos[chave] ? `${rotulos[chave]} — ${mensagem}` : mensagem
-      }).join(' ')
-    }
-  }
-  return 'Não foi possível salvar. Confira sua conexão e tente novamente.'
 }

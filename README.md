@@ -84,6 +84,10 @@ Abra o [admin do Django em 127.0.0.1](http://127.0.0.1:8000/admin/) e entre com 
 2. Em **Usuários**, adicione a primeira conta com perfil **Diretoria**, e-mail e senha inicial. Para testar o acesso da coordenação, crie também uma conta com perfil **Coordenação**.
 3. No [Giz](http://localhost:5173), entre com o e-mail de uma dessas contas e abra **Gestão escolar**. Cadastre anos letivos, bimestres, turmas, disciplinas, professores, alunos, vínculos docentes e matrículas. A diretoria também pode abrir **Regras de avaliação** e alterar os valores.
 
+## Publicar e consultar atividades e provas
+
+No perfil **Professor**, abra **Atividades e provas**, escolha uma turma, disciplina e bimestre e consulte o saldo antes de publicar. Cada período aceita uma prova por turma e disciplina. A prova recebe o valor configurado no momento da publicação e mantém esse valor ao mudar de período. O perfil **Aluno** usa a mesma tela para consultar as publicações das turmas em que está matriculado.
+
 ## Verificações
 
 Em `backend/`, com o PostgreSQL em execução:
