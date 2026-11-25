@@ -1,0 +1,87 @@
+main:has(.area-escolar) {
+  max-width: 68rem;
+  margin-top: 1rem;
+}
+
+.area-escolar h1 {
+  margin: 0.75rem 0 1rem;
+}
+
+.area-escolar a {
+  color: #224b37;
+}
+
+.area-escolar nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #c9d9ce;
+}
+
+.area-escolar nav a {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+}
+
+.area-escolar nav a[aria-current='page'] {
+  color: #fff;
+  background: #224b37;
+}
+
+.cadastro-escolar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 19rem);
+  gap: 2rem;
+}
+
+.cadastro-escolar h3 {
+  margin-top: 0;
+}
+
+.tabela-escolar {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.tabela-escolar table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tabela-escolar th,
+.tabela-escolar td {
+  padding: 0.625rem;
+  border-bottom: 1px solid #c9d9ce;
+}
+
+.tabela-escolar th {
+  background: #f1f6f2;
+}
+
+.area-escolar select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #6a8475;
+  border-radius: 0.375rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.regras-escolares {
+  max-width: 24rem;
+}
+
+@media (max-width: 42rem) {
+  main:has(.area-escolar) {
+    padding: 1rem;
+  }
+
+  .cadastro-escolar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

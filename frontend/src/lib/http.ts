@@ -1,5 +1,7 @@
+import { z } from 'zod'
+
 export class ErroHttp extends Error {
-  constructor(public readonly status: number) {
+  constructor(public readonly status: number, public readonly detalhes?: unknown) {
     super(`Falha na API (HTTP ${status}).`)
   }
 }
@@ -8,7 +10,7 @@ async function requisitar(caminho: string, opcoes?: RequestInit): Promise<Respon
   const resposta = await fetch(caminho, opcoes)
 
   if (!resposta.ok) {
-    throw new ErroHttp(resposta.status)
+    throw new ErroHttp(resposta.status, await resposta.json().catch(() => undefined))
   }
 
   return resposta
@@ -19,16 +21,17 @@ export async function obterJson(caminho: string, signal?: AbortSignal): Promise<
   return resposta.json()
 }
 
-export async function enviarPost(
+export async function enviarJson(
   caminho: string,
-  csrfToken: string,
+  metodo: 'POST' | 'PATCH',
   dados?: object,
 ): Promise<unknown> {
+  const token = z.object({ csrfToken: z.string() }).parse(await obterJson('/api/csrf/'))
   const resposta = await requisitar(caminho, {
-    method: 'POST',
+    method: metodo,
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken,
+      'X-CSRFToken': token.csrfToken,
     },
     body: JSON.stringify(dados),
   })

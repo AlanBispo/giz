@@ -1,12 +1,5 @@
-import { z } from 'zod'
-
-import { enviarPost, ErroHttp, obterJson } from '../../../lib/http'
+import { enviarJson, ErroHttp, obterJson } from '../../../lib/http'
 import { type Credenciais, type Usuario, usuarioSchema } from '../types'
-
-async function obterTokenCsrf(): Promise<string> {
-  const dados = await obterJson('/api/csrf/')
-  return z.object({ csrfToken: z.string() }).parse(dados).csrfToken
-}
 
 export async function consultarSessao(signal: AbortSignal): Promise<Usuario | null> {
   try {
@@ -20,11 +13,9 @@ export async function consultarSessao(signal: AbortSignal): Promise<Usuario | nu
 }
 
 export async function entrar(credenciais: Credenciais): Promise<Usuario> {
-  const token = await obterTokenCsrf()
-  return usuarioSchema.parse(await enviarPost('/api/login/', token, credenciais))
+  return usuarioSchema.parse(await enviarJson('/api/login/', 'POST', credenciais))
 }
 
 export async function sair(): Promise<void> {
-  const token = await obterTokenCsrf()
-  await enviarPost('/api/logout/', token)
+  await enviarJson('/api/logout/', 'POST')
 }
