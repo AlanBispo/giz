@@ -77,6 +77,8 @@ class PublicacaoDetalheView(APIView):
             services.excluir_publicacao(
                 professor=request.user, publicacao_id=pk, **entrada.validated_data,
             )
+        except ValidationError as erro:
+            raise ErroEntrada(erro.message_dict) from erro
         except services.PublicacaoDesatualizada as erro:
             raise ConflitoPublicacao() from erro
         except (Publicacao.DoesNotExist, Escola.DoesNotExist) as erro:

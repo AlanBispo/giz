@@ -40,6 +40,12 @@ def publicacoes_visiveis(*, usuario: Usuario) -> QuerySet[Publicacao]:
     return publicacoes.none()
 
 
+def bloquear_publicacao_docente(*, professor: Usuario, publicacao_id: int) -> Publicacao:
+    return publicacoes_visiveis(usuario=professor).select_for_update(
+        of=("self",), no_key=True,
+    ).get(pk=publicacao_id)
+
+
 def publicacoes_do_periodo(
     *, turma: Turma, disciplina: Disciplina, bimestre: Bimestre
 ) -> QuerySet[Publicacao]:
