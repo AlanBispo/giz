@@ -1,19 +1,13 @@
 from django.contrib.auth import login, logout
-from django.db.models import Value
-from django.db.models.functions import Lower
 from django.http import HttpRequest
 
 from .models import Usuario
+from .selectors import buscar_usuario_por_email
 
 
 def iniciar_sessao(*, request: HttpRequest, email: str, senha: str) -> Usuario | None:
-    try:
-        usuario = (
-            Usuario.objects.exclude(email="")
-            .alias(email_normalizado=Lower("email"))
-            .get(email_normalizado=Lower(Value(email)))
-        )
-    except Usuario.DoesNotExist:
+    usuario = buscar_usuario_por_email(email=email)
+    if usuario is None:
         Usuario().set_password(senha)
         return None
 

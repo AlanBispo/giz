@@ -97,6 +97,29 @@ class SessaoTest(TestCase):
                 self.assertEqual(resposta.json(), {"detail": "E-mail ou senha inválidos."})
                 self.assertNotIn("sessionid", resposta.cookies)
 
+    def test_login_preserva_email_legado_sem_confundir_conta_normalizada(self) -> None:
+        Usuario.objects.filter(username="aluno").update(email="legado@İstanbul.com")
+        Usuario.objects.filter(username="professor").update(email="normal@istanbul.com")
+        Usuario.objects.filter(username="coordenacao").update(email="legado@i\u0307stanbul.com")
+
+        for email, perfil in (
+            ("legado@istanbul.com", Usuario.Perfil.ALUNO),
+            ("Legado@İstanbul.com", Usuario.Perfil.ALUNO),
+            ("legado@i\u0307stanbul.com", Usuario.Perfil.COORDENACAO),
+            ("normal@İstanbul.com", None),
+        ):
+            with self.subTest(email=email):
+                self.api.logout()
+                resposta = self.api.post(
+                    reverse("login"),
+                    {"email": email, "senha": self.senha},
+                    format="json",
+                    HTTP_X_CSRFTOKEN=self._token_csrf(),
+                )
+                self.assertEqual(resposta.status_code, 200 if perfil else 400)
+                if perfil:
+                    self.assertEqual(resposta.json()["perfil"], perfil)
+
     def test_falha_ao_salvar_sessao_reverte_o_login(self) -> None:
         token = self._token_csrf()
         salvar = SessionStore.save
